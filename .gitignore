@@ -1,0 +1,106 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Built application files
+*.apk
+*.ap_
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Gradle files
+.gradle/
+build/
+!gradle-wrapper.jar
+
+# Signing files
+**/keystore.jks
+**/*.keystore
+**/*.jks
+**/*.pem
+**/*.key
+**/*.crt
+
+# Local configuration files
+local.properties
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Jetpack Compose preview cache
+*.cache/
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Kotlin specific
+*.kotlin_module
+
+# Android Studio captures
+captures/
+
+# NDK
+obj/
+
+# IntelliJ
+.idea/
+*.iml
+
+# Gradle Cache
+.cxx/
+.externalNativeBuild/
+
+# Firebase / Crashlytics
+fabric.properties
+crashlytics.properties
+**/google-services.json
+**/firebase-debug.log
+
+# Jetpack Compose compiler logs
+.compose-cache/
+
+# App distribution
+fastlane/report.xml
+fastlane/metadata/android/*/images/featureGraphic.png
+fastlane/metadata/android/*/images/phoneScreenshots/*
+fastlane/metadata/android/*/images/sevenInchScreenshots/*
+fastlane/metadata/android/*/images/tenInchScreenshots/*
+fastlane/metadata/android/*/images/tvScreenshots/*
+fastlane/metadata/android/*/images/wearScreenshots/*
+fastlane/metadata/android/*/images/icon.png
+
+# Android Studio Navigation Editor temp files
+.navigation/
+
+# Kotlin DSL scripts
+.gradle.kts/
+build.gradle.kts
+
+# Local environment
+.env
+*.env
