@@ -10,8 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun HomeScreen(navController: NavController, onRegister: () -> Unit,
-onLogin: () -> Unit) {
+fun HomeScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.Center,
@@ -19,11 +18,11 @@ onLogin: () -> Unit) {
     ) {
         Text("Welcome to FIDO2 App")
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { onRegister() }) {
+        Button(onClick = { navController.navigate("register") }) {
             Text("Register")
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { onLogin() }) {
+        Button(onClick = { navController.navigate("login") }) {
             Text("Login")
         }
     }

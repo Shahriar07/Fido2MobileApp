@@ -124,15 +124,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.konasl.fido2mobileapp.ui.theme.Fido2MobileAppTheme
 import com.konasl.fido2mobileapp.ui.screens.HomeScreen
 import com.konasl.fido2mobileapp.ui.screens.LoginScreen
 import com.konasl.fido2mobileapp.ui.screens.RegisterScreen
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.konasl.fido2mobileapp.ui.theme.Fido2MobileAppTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -156,8 +154,9 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
-                        HomeScreen(navController,  onRegister =  { startAuthorizationFlow() },
-                        onLogin = { startAuthorizationFlow() })
+                        HomeScreen(navController)
+//                        HomeScreen(navController,  onRegister =  { startAuthorizationFlow() },
+//                        onLogin = { startAuthorizationFlow() })
                     }
                     composable("register") {
                         RegisterScreen(navController)
