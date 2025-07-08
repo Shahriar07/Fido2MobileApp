@@ -6,12 +6,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 @Composable
-fun NavigationGraph(navController: NavHostController) {
-
-
+fun NavigationGraph(
+    navController: NavHostController,
+    showDialog: (String, String) -> Unit,
+    userName: String = "",
+    onLogout: () -> Unit = {}
+) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
-        composable("register") { RegisterScreen(navController) }
-        composable("login") { LoginScreen(navController) }
+        composable("register") { RegisterScreen(navController, showDialog) }
+        composable("login") { LoginScreen(navController, showDialog) }
+        composable("profile") {
+            ProfileScreen(
+                navController = navController,
+                userName = userName,
+                onLogout = onLogout
+            )
+        }
     }
 }

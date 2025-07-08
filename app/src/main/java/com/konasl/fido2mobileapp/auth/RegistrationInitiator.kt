@@ -11,7 +11,8 @@ object RegistrationInitiator {
         accessToken: String,
         onResult: (creationOptionsJSON: String?) -> Unit
     ) {
-        val url = "https://dev-kidp.konancp.com/register/options?username=$username"
+//        val url = "https://dev-kidp.konancp.com/register/options?username=$username"
+        val url = "http://localhost:9080/register/options?username=$username"
         val headers = mapOf(
             "Authorization" to "Bearer $accessToken"
         )
