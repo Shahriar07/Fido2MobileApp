@@ -9,7 +9,8 @@ object Constants {
     const val STATE = "abc124"
     const val NONCE = "xyz789"
     const val IDP_ID = "0oaowiju4yrqv3ldC5d7"
-    const val BASE_URL = "http://10.88.231.251:9080"
+//    const val BASE_URL = "http://10.88.231.251:9080"
+    const val BASE_URL = "https://dev-kidp.konancp.com"
     const val FIDO2_REGISTER_PATH = "/api/webauthn/register/options"
     const val FIDO2_REGISTER_COMPLETE_PATH = "/api/webauthn/register/complete"
 
