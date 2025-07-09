@@ -22,9 +22,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.android.gms.fido.Fido
 import com.google.android.gms.fido.fido2.api.common.AuthenticatorAssertionResponse
 import com.google.android.gms.fido.fido2.api.common.AuthenticatorErrorResponse
@@ -37,6 +39,7 @@ import com.konasl.fido2mobileapp.ui.screens.ProfileScreen
 import com.konasl.fido2mobileapp.ui.screens.RegisterScreen
 import com.konasl.fido2mobileapp.ui.theme.Fido2MobileAppTheme
 import com.konasl.fido2mobileapp.utils.Constants
+import com.konasl.fido2mobileapp.utils.Fido2Utils
 import com.konasl.fido2mobileapp.utils.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -80,8 +83,13 @@ class MainActivity : ComponentActivity() {
                             showAuthDialog = this@MainActivity::showAuthDialog
                         )
                     }
-                    composable("profile") { backStackEntry ->
-                        // Retrieve username from nav arguments or a shared ViewModel as needed
+                    composable(
+                        route = "profile/{userName}",
+                        arguments = listOf(
+                            navArgument("userName") { type = NavType.StringType }
+                        )
+                    ) { backStackEntry ->
+                        // Retrieve username from nav arguments
                         val userName = backStackEntry.arguments?.getString("userName") ?: ""
                         ProfileScreen(
                             navController = navController,
@@ -167,6 +175,16 @@ class MainActivity : ComponentActivity() {
                     val response = credential.response
                     if (response is AuthenticatorErrorResponse) {
                         Log.e("FIDO2", "Registration error. $response")
+                        val errorMessage = Fido2Utils.getFido2ErrorMessage(response)
+                        runOnUiThread {
+                            setRegistrationError("Registration failed: $errorMessage")
+                            Toast.makeText(
+                                this@MainActivity,
+                                errorMessage,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        pendingUserName = null
                     } else {
                         // Use the stored username
                         pendingUserName?.let { userName ->
@@ -302,6 +320,18 @@ class MainActivity : ComponentActivity() {
         _registrationError.value = null
     }
 
+    // Add state for authentication errors
+    private var _authenticationError = mutableStateOf<String?>(null)
+    val authenticationError: State<String?> = _authenticationError
+
+    fun setAuthenticationError(errorMessage: String?) {
+        _authenticationError.value = errorMessage
+    }
+
+    fun clearAuthenticationError() {
+        _authenticationError.value = null
+    }
+
     private fun showPermissionSettingsDialog(permissionName: String) {
         AlertDialog.Builder(this)
             .setTitle("$permissionName Permission Required")
@@ -386,14 +416,24 @@ class MainActivity : ComponentActivity() {
                 if (responseData != null) {
                     Log.d(
                         "FIDO2",
-                        "Registration success! fido2RegisterLauncher Credential received. $responseData"
+                        "Authentication response received. $responseData"
                     )
                     val credential = PublicKeyCredential.deserializeFromBytes(
                         responseData
                     )
                     val response = credential.response
                     if (response is AuthenticatorErrorResponse) {
-                        Log.e("FIDO2", "Registration error. $response")
+                        Log.e("FIDO2", "Authentication error. $response")
+                        val errorMessage = Fido2Utils.getFido2ErrorMessage(response)
+                        runOnUiThread {
+                            setAuthenticationError("Authentication failed: $errorMessage")
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Authentication failed: $errorMessage",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        pendingUserName = null
                     } else {
                         // Use the stored username
                         pendingUserName?.let { userName ->
@@ -402,9 +442,12 @@ class MainActivity : ComponentActivity() {
                         pendingUserName = null
                     }
                 } else {
-                    Log.e("FIDO2", "Registration canceled or failed")
+                    Log.e("FIDO2", "Authentication canceled or failed")
+                    setAuthenticationError("Authentication failed. The operation was cancelled or not allowed.")
                     pendingUserName = null
                 }
+            } else {
+                setAuthenticationError("Authentication failed. The operation was cancelled or not allowed.")
             }
         }
 
@@ -454,16 +497,18 @@ class MainActivity : ComponentActivity() {
                     try {
                         if (success && apiResponse != null) {
                             runOnUiThread {
+                                clearAuthenticationError() // Clear any previous errors
                                 Toast.makeText(
                                     this@MainActivity,
                                     "Authentication Successful",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+                            // Pass the userName directly to ensure it appears in the profile
                             showProfile(userName)
-                            //TODO: Error handling need to be implemented
                         } else {
                             runOnUiThread {
+                                setAuthenticationError("Authentication failed. The operation was cancelled or not allowed.")
                                 Toast.makeText(
                                     this@MainActivity,
                                     "Authentication Failed",
@@ -474,17 +519,21 @@ class MainActivity : ComponentActivity() {
                         }
                     } catch (e: Exception) {
                         runOnUiThread {
+                            setAuthenticationError("Authentication Failed: ${e.message}")
                             Toast.makeText(
                                 this@MainActivity,
-                                "Authentication Failed : ${e.message}",
+                                "Authentication Failed: ${e.message}",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                        Log.e("Authentication", "User authentication failed : ${e.message}")
+                        Log.e("Authentication", "User authentication failed: ${e.message}")
                     }
                 })
                 Log.i(LOG_TAG, "FIDO2 authentication data sent to backend")
             } catch (e: Exception) {
+                runOnUiThread {
+                    setAuthenticationError("Network Error: ${e.message}")
+                }
                 Log.e(LOG_TAG, "Error sending FIDO2 authentication", e)
             }
         }
@@ -493,7 +542,8 @@ class MainActivity : ComponentActivity() {
 
     fun showProfile(userName: String) {
         runOnUiThread {
-            navController.navigate("profile?userName=$userName")
+            // Update to use the new route format with userName as a path parameter        }
+            navController.navigate("profile/${Uri.encode(userName)}")   
         }
     }
 

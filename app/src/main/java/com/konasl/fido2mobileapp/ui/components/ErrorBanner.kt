@@ -21,31 +21,26 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ErrorBanner(
     message: String,
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = Color(0xFFFF5252)
+    modifier: Modifier = Modifier
 ) {
-    Box(
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = backgroundColor)
-            .padding(vertical = 12.dp, horizontal = 16.dp)
+            .background(Color(0xFFFF5252))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Error,
-                contentDescription = "Error",
-                tint = Color.White,
-                modifier = Modifier.padding(end = 12.dp)
-            )
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White,
-                textAlign = TextAlign.Start
-            )
-        }
+        Icon(
+            imageVector = Icons.Default.Error,
+            contentDescription = "Error",
+            tint = Color.White,
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White
+        )
     }
 }
 
@@ -79,3 +74,4 @@ fun WarningBanner(
         }
     }
 }
+
