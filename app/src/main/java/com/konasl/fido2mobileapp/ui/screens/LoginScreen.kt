@@ -311,7 +311,7 @@ fun LoginScreen(navController: NavController, showAuthDialog: (String, String) -
                         val baseUrl = Constants.BASE_URL
                         val authenticatePath = Constants.FIDO2_AUTHENTICATION_PATH
                         val fullUrl = "$baseUrl$authenticatePath"
-                            mainActivity?.setAuthenticationError("Username is required")
+                        mainActivity?.setAuthenticationError("Username is required")
                         val finalUsername = username.trim()
                         val encodedUsername = URLEncoder.encode(finalUsername, "UTF-8")
                         
@@ -368,15 +368,5 @@ fun LoginScreen(navController: NavController, showAuthDialog: (String, String) -
                 Text("Back to Home")
             }
         }
-    }
-    
-    // Update MainActivity's showAuthDialog function to update the authenticationState
-    DisposableEffect(Unit) {
-        val originalShowAuthDialog = showAuthDialog
-        val wrappedShowAuthDialog: (String, String) -> Unit = { username, response ->
-            authenticationState = AuthenticationState.AUTHENTICATING
-            originalShowAuthDialog(username, response)
-        }
-        onDispose { }
     }
 }

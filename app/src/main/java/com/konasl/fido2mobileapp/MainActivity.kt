@@ -504,7 +504,6 @@ class MainActivity : ComponentActivity() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-                            // Pass the userName directly to ensure it appears in the profile
                             showProfile(userName)
                         } else {
                             runOnUiThread {
